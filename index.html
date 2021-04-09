@@ -81,7 +81,12 @@ if(q.error) {
 // If the server returned an authorization code, attempt to exchange it for an access token
 if(q.perfil) {
 
-   
+     // Create and store a new PKCE code_verifier (the plaintext random secret)
+    var code_verifier = generateRandomString();
+    localStorage.setItem("pkce_code_verifier", code_verifier);
+
+    // Hash and base64-urlencode the secret to use as the challenge
+    var code_challenge = await pkceChallengeFromVerifier(code_verifier);
 
         // Exchange the authorization code for an access token
         sendPostRequest(config.token_endpoint, {
